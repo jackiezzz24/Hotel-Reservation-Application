@@ -5,15 +5,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReservationService {
-    private static final ReservationService rs = new ReservationService();
-    private final Map<String, IRoom> mapOfRooms = new HashMap<String, IRoom>();
-
-    private final Map<String, Collection<Reservation>> mapOfReservation = new HashMap<String, Collection<Reservation>>();
+    private final Map<String, IRoom> mapOfRooms = new HashMap<>();
+    private final Map<String, Collection<Reservation>> mapOfReservation = new HashMap<>();
     private final Collection<Reservation> reservationSet = new HashSet<>();
 
-    public static ReservationService getInstance(){
-        return rs;
-    }
     public void addRoom(IRoom room){
         mapOfRooms.put(room.getRoomNumber(), room);
     }

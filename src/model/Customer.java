@@ -8,11 +8,10 @@ public class Customer {
     private final String lastName;
     private final String email;
 
-    private final String emailRegex = "^(.+)@(.+).(.+)$";
-    private final Pattern pattern = Pattern.compile(emailRegex);
-
     public Customer(String firstName, String lastName, String email){
         super();
+        String emailRegex = "^(.+)@(.+).(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
         if (!pattern.matcher(email).matches()){
             throw new IllegalArgumentException("Invalid Email address. Please try again.");
         }

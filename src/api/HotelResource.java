@@ -5,13 +5,8 @@ import service.*;
 import java.util.*;
 
 public class HotelResource {
-    private static final HotelResource hr = new HotelResource();
-    private static final CustomerService customerService = CustomerService.getInstance();
-    private static final ReservationService reservationService = ReservationService.getInstance();
-
-    public static HotelResource getInstance(){
-        return hr;
-    }
+    private static final CustomerService customerService = new CustomerService();
+    private static final ReservationService reservationService = new ReservationService();
 
     public Customer getCustomer(String email){
         return customerService.getCustomer(email);
@@ -25,14 +20,14 @@ public class HotelResource {
         return reservationService.getRoom(roomNumber);
     }
 
-    public Reservation bookARoom(String customerEmail, IRoom room, Date checkInDate, Date checkOutDate){
+    public Reservation bookARoom(String customerEmail, IRoom room, Date checkInDate, Date checkOutDate) {
+        Customer customer = null;
         try {
-            Customer customer = getCustomer(customerEmail);
-        }
-        catch (IllegalArgumentException ex){
+            customer = getCustomer(customerEmail);
+        } catch (IllegalArgumentException ex) {
             System.out.println("This email address is not in our database.");
         }
-        return reservationService.reserveARoom(getCustomer(customerEmail), room, checkInDate, checkOutDate);
+        return reservationService.reserveARoom(customer, room, checkInDate, checkOutDate);
     }
 
     public Collection<Reservation> getCustomersReservations(String customerEmail){

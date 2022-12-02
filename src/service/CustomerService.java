@@ -4,12 +4,8 @@ import model.*;
 import java.util.*;
 
 public class CustomerService {
-    private static CustomerService cs = new CustomerService();
-    private Map<String, Customer> mapOfCustomer = new HashMap<String, Customer>();
+    private Map<String, Customer> mapOfCustomer = new HashMap<>();
 
-    public static CustomerService getInstance(){
-        return cs;
-    }
     public void addCustomer(String email, String firstName, String lastName) {
         try {
             if (mapOfCustomer.containsKey(email)) {

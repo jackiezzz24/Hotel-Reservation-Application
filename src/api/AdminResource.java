@@ -5,13 +5,8 @@ import service.*;
 import java.util.*;
 
 public class AdminResource {
-    private static final AdminResource ar = new AdminResource();
-    private static final CustomerService customerService = CustomerService.getInstance();
-    private static final ReservationService reservationService = ReservationService.getInstance();
-
-    public static AdminResource getInstance() {
-        return ar;
-    }
+    private static final CustomerService customerService = new CustomerService();
+    private static final ReservationService reservationService = new ReservationService();
 
     public void addRoom(List<IRoom> rooms){
         for (IRoom room: rooms) {

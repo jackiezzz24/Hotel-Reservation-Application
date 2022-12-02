@@ -5,7 +5,7 @@ import api.*;
 import model.*;
 
 public class AdminMenu {
-    public static AdminResource ar = AdminResource.getInstance();
+    public static AdminResource ar = new AdminResource();
     private static final List<IRoom> roomList = new ArrayList<>();
 
     public static void main() {
@@ -123,7 +123,7 @@ public class AdminMenu {
 
     private static Double getRoomPrice(){
         boolean flag = true;
-        Double roomPrice = 0.0;
+        double roomPrice = 0.0;
         String roomPriceRegex = "([0-9]+)\\.?([0-9]+)?";
         Pattern pattern = Pattern.compile(roomPriceRegex);
 
@@ -132,7 +132,7 @@ public class AdminMenu {
                 Scanner roomPriceScanner = new Scanner(System.in);
                 System.out.println("Enter price per night: ");
                 roomPrice = roomPriceScanner.nextDouble();
-                if (!pattern.matcher(roomPrice.toString()).matches()) {
+                if (!pattern.matcher(Double.toString(roomPrice)).matches()) {
                     throw new IllegalArgumentException("Invalid entry. Please try again.");
                 }
             }
@@ -167,10 +167,7 @@ public class AdminMenu {
             }
             flag = false;
         }
-        if (userInput.equals("1")){
-            roomType = RoomType.SINGLE;
-        }
-        else {
+        if (userInput.equals("2")){
             roomType = RoomType.DOUBLE;
         }
         return roomType;

@@ -4,15 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MainMenu {
-    public static HotelResource hr = HotelResource.getInstance();
+    public static HotelResource hr = new HotelResource();
     private static final Scanner scanner = new Scanner(System.in);
     private static Collection<IRoom> availableRoom = new HashSet<>();
 
     public static void main() {
-        boolean flag = true;
         Scanner scanner = new Scanner(System.in);
         mainMenu();
-        while (flag) {
+        while (true) {
             try {
                 String userInput = scanner.nextLine();
                     switch (userInput) {
