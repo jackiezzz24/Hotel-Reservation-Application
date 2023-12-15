@@ -8,7 +8,7 @@ public class AdminMenu {
     public static AdminResource ar = new AdminResource();
     private static final List<IRoom> roomList = new ArrayList<>();
 
-    public static void main() {
+    public static void adminOptions() {
         adminMenu();
         Scanner menuScanner = new Scanner(System.in);
         while (true) {
@@ -24,28 +24,32 @@ public class AdminMenu {
                                 System.out.println(cus.toString() + "\n");
                             }
                         }
-                        main();
+                        adminOptions();
                     }
                     case "2" -> {
-                        Collection<IRoom> roomCollection = ar.getAllRooms();
-                        if (roomCollection.isEmpty()) {
+                        Collection<IRoom> allRooms = ar.getAllRooms();
+                        if (allRooms.isEmpty()) {
                             System.out.println("There is no room in the system.");
                         } else {
-                            for (IRoom room : roomCollection) {
+                            for (IRoom room : allRooms) {
                                 System.out.println(room.toSting() + "\n");
                             }
                         }
-                        main();
+                        adminOptions();
                     }
                     case "3" -> {
                         ar.displayAllReservations();
-                        main();
+                        adminOptions();
                     }
                     case "4" -> {
                         addRoom();
                     }
                     case "5" -> {
-                        MainMenu.main();
+                        MainMenu.mainOptions();
+                    }
+                    case "6" -> {
+                        addSampleData();
+                        adminOptions();
                     }
                     default -> {
                         System.out.println("Invalid input. Valid selection is 1 to 5. Please try again.");
@@ -59,24 +63,23 @@ public class AdminMenu {
     }
 
     public static void adminMenu(){
-        System.out.println("");
-        System.out.println("Admin Menu");
+        System.out.println("\nAdmin Menu");
         System.out.println("--------------------------------------");
         System.out.println("1. See all Customers");
         System.out.println("2. See all Rooms");
         System.out.println("3. See all Reservations");
         System.out.println("4. Add a Room");
         System.out.println("5. Back to Main Menu");
+        System.out.println("6. Add sample Customers and Rooms data");
         System.out.println("--------------------------------------");
         System.out.println("Please select a number for the menu option");
     }
     public static void addRoom(){
         while (true) {
-            IRoom room;
             String roomNumber = getRoomNumber();
             Double roomPrice = getRoomPrice();
             RoomType roomType = getRoomType();
-            room = new Room(roomNumber, roomPrice, roomType);
+            IRoom room = new Room(roomNumber, roomPrice, roomType);
             roomList.add(room);
             ar.addRoom(roomList);
 
@@ -100,8 +103,7 @@ public class AdminMenu {
     private static String getRoomNumber(){
         boolean flag = true;
         String roomNumber = null;
-        String roomNumRegex = "([0-9]+)";
-        Pattern pattern = Pattern.compile(roomNumRegex);
+        Pattern pattern = Pattern.compile("([0-9]+)");
 
         while (flag){
             try {
@@ -124,8 +126,7 @@ public class AdminMenu {
     private static Double getRoomPrice(){
         boolean flag = true;
         double roomPrice = 0.0;
-        String roomPriceRegex = "([0-9]+)\\.?([0-9]+)?";
-        Pattern pattern = Pattern.compile(roomPriceRegex);
+        Pattern pattern = Pattern.compile("([0-9]+)\\.?([0-9]+)?");
 
         while (flag){
             try {
@@ -149,8 +150,7 @@ public class AdminMenu {
         RoomType roomType = RoomType.SINGLE;
         boolean flag = true;
         String userInput = "";
-        String roomTypeRegex = "([1-2])";
-        Pattern pattern = Pattern.compile(roomTypeRegex);
+        Pattern pattern = Pattern.compile("([1-2])");
 
         while (flag){
             try {
@@ -171,5 +171,10 @@ public class AdminMenu {
             roomType = RoomType.DOUBLE;
         }
         return roomType;
+    }
+
+    private static void addSampleData() {
+        ar.addSampleData();
+        System.out.println("Sample data added.");
     }
 }

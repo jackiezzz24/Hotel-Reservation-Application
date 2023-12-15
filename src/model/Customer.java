@@ -10,8 +10,7 @@ public class Customer {
 
     public Customer(String firstName, String lastName, String email){
         super();
-        String emailRegex = "^(.+)@(.+).(.+)$";
-        Pattern pattern = Pattern.compile(emailRegex);
+        Pattern pattern = Pattern.compile("^(.+)@(.+).com$", Pattern.CASE_INSENSITIVE);
         if (!pattern.matcher(email).matches()){
             throw new IllegalArgumentException("Invalid Email address. Please try again.");
         }

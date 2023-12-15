@@ -1,24 +1,35 @@
 package service;
 
 import model.*;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReservationService {
-    private final Map<String, IRoom> mapOfRooms = new HashMap<>();
-    private final Map<String, Collection<Reservation>> mapOfReservation = new HashMap<>();
-    private final Collection<Reservation> reservationSet = new HashSet<>();
+    private final Map<String, IRoom> roomDatabase = new HashMap<>();
+    private final Map<String, Collection<Reservation>> allCustomerReservation = new HashMap<>();
+    private final Set<Reservation> allReservation = new HashSet<>();
+
+    private static ReservationService instance;
+
+    public static ReservationService getInstance() {
+        if (instance == null) {
+            instance = new ReservationService();
+        }
+        return instance;
+    }
 
     public void addRoom(IRoom room){
-        mapOfRooms.put(room.getRoomNumber(), room);
+        if (!roomDatabase.containsKey(room.getRoomNumber())) {
+            roomDatabase.put(room.getRoomNumber(), room);
+        } else {
+            System.out.println("This room number already exist in the database.");
+        }
     }
 
-    public IRoom getRoom(String roomNumber){
-        return mapOfRooms.get(roomNumber);
-    }
-
-    public Collection<IRoom> getAllRoom(){
-        return mapOfRooms.values();
+    public IRoom getARoom(String roomId){
+        return roomDatabase.get(roomId);
     }
 
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
@@ -29,64 +40,65 @@ public class ReservationService {
             cusReservation = new HashSet<>();
         }
         cusReservation.add(reservation);
-        mapOfReservation.put(customer.getEmail(), cusReservation);
-        reservationSet.add(reservation);
+        allCustomerReservation.put(customer.getEmail(), cusReservation);
+        allReservation.add(reservation);
         return reservation;
     }
 
-    public Collection<IRoom> findARoom(Date checkInDate, Date checkOutDate){
-        return findRooms(checkInDate, checkOutDate);
-    }
-
-    Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-        Collection<Reservation> allReservation = getAllReservation();
-        Collection<IRoom> bookedRooms = new HashSet<>();
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+        Collection<String> bookedRooms = new HashSet<>();
+        Collection<IRoom> availableRooms = new HashSet<>();
         for (Reservation reservation : allReservation) {
-            if (checkInDate.before(reservation.getCheckOutDate())
-                    && checkOutDate.after(reservation.getCheckInDate())) {
-                bookedRooms.add(reservation.getRoom());
+            if (checkInDate.before(reservation.getCheckOutDate()) || checkOutDate.after(reservation.getCheckInDate())) {
+                bookedRooms.add(reservation.getRoom().getRoomNumber());
             }
         }
-        return mapOfRooms.values().stream().filter(room -> bookedRooms.stream()
-                        .noneMatch(bookedRoom -> bookedRoom.equals(room)))
-                .collect(Collectors.toList());
+        for (String roomNumber: roomDatabase.keySet()) {
+            if (!bookedRooms.contains(roomNumber)) {
+                availableRooms.add(roomDatabase.get(roomNumber));
             }
-
-    public Collection<IRoom> recommendRoom(Date checkInDate, Date checkOutDate){
-        Date newCheckInDate = alternativeDate(checkInDate);
-        Date newCheckOutDate = alternativeDate(checkOutDate);
-        return findRooms(newCheckInDate, newCheckOutDate);
-    }
-
-    public Date alternativeDate(Date date){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 7);
-        return calendar.getTime();
+        }
+        return availableRooms;
     }
 
     public Collection<Reservation> getCustomerReservation(Customer customer){
-        return mapOfReservation.get(customer.getEmail());
+        return allCustomerReservation.get(customer.getEmail());
     }
 
     public void printAllReservation(){
-        if (reservationSet.isEmpty()) {
+        if (allReservation.isEmpty()) {
             System.out.println("There is no reservation in our database.");
         }
         else {
-            for (Reservation reservation : reservationSet) {
+            for (Reservation reservation : allReservation) {
                 System.out.println(reservation + "\n");
             }
         }
     }
 
-    public Collection<Reservation> getAllReservation(){
-        Collection<Reservation> reservationsSet = new LinkedList<>();
-        for (Collection<Reservation> reservation: mapOfReservation.values()) {
-            reservationsSet.addAll(reservation);
-        }
-        return reservationsSet;
+    public Collection<IRoom> getAllRooms() {
+        return new HashSet<>(roomDatabase.values());
     }
 
+//    public Collection<IRoom> recommendRooms(Date checkInDate, Date checkOutDate){
+//        Date newCheckInDate = datePlusDuration(checkInDate);
+//        Date newCheckOutDate = datePlusDuration(checkOutDate);
+//        return findRooms(newCheckInDate, newCheckOutDate);
+//    }
+//
+//    public Date datePlusDuration(Date date){
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(date);
+//        calendar.add(Calendar.DATE, 7);
+//        return calendar.getTime();
+//    }
 
+    public void addSampleData() {
+        IRoom room1 = new Room("101", 135.0, RoomType.SINGLE);
+        IRoom room2 = new Room("102", 225.0, RoomType.DOUBLE);
+        IRoom room3 = new FreeRoom("103", RoomType.SINGLE);
+        roomDatabase.put(room1.getRoomNumber(), room1);
+        roomDatabase.put(room2.getRoomNumber(), room2);
+        roomDatabase.put(room3.getRoomNumber(), room3);
+    }
 }

@@ -8,9 +8,9 @@ public class MainMenu {
     private static final Scanner scanner = new Scanner(System.in);
     private static Collection<IRoom> availableRoom = new HashSet<>();
 
-    public static void main() {
+    public static void mainOptions() {
         Scanner scanner = new Scanner(System.in);
-        mainMenu();
+        printMainMenu();
         while (true) {
             try {
                 String userInput = scanner.nextLine();
@@ -23,7 +23,7 @@ public class MainMenu {
                             System.out.println("Enter your email address: ");
                             String email = scannerEmail.nextLine();
                             printCusReservation(hr.getCustomersReservations(email));
-                            mainMenu();
+                            printMainMenu();
                         }
                         case "3" -> {
                             Scanner scannerAcct = new Scanner(System.in);
@@ -34,10 +34,10 @@ public class MainMenu {
                             System.out.println("Enter your last name: ");
                             String lastName = scannerAcct.nextLine();
                             hr.createACustomer(email, firstName, lastName);
-                            mainMenu();
+                            printMainMenu();
                         }
                         case "4" -> {
-                            AdminMenu.main();
+                            AdminMenu.adminOptions();
                         }
                         case "5" -> {
                             System.out.println("Exiting...");
@@ -51,9 +51,8 @@ public class MainMenu {
         }
     }
 
-    public static void mainMenu(){
-        System.out.println("");
-        System.out.println("Welcome to the Hotel Reservation Application\n");
+    public static void printMainMenu(){
+        System.out.println("\nWelcome to the Hotel Reservation Application");
         System.out.println("--------------------------------------");
         System.out.println("1. Find and reserve a room");
         System.out.println("2. See my reservations");
@@ -72,7 +71,7 @@ public class MainMenu {
             checkIn = new SimpleDateFormat("MM-dd-yyyy").parse(checkInDate);
         } catch(Exception ex) {
            System.out.println("Invalid Input");
-            main();
+           mainOptions();
         }
         System.out.println("Enter check out date: mm-dd-yyyy");
         String checkOutDate = scannerDate.nextLine();
@@ -81,30 +80,32 @@ public class MainMenu {
             checkOut = new SimpleDateFormat("MM-dd-yyyy").parse(checkOutDate);
         } catch(Exception ex) {
             System.out.println("Invalid Input");
-            main();
+            mainOptions();
         }
 
         if (checkIn != null && checkOut != null) {
             availableRoom = hr.findARoom(checkIn, checkOut);
         }
-
+        //System.out.println(availableRoom);
         if (availableRoom.isEmpty()){
-            Collection<IRoom> recommendRoom = hr.recommendRoom(checkIn, checkOut);
-            if (recommendRoom.isEmpty()){
-                System.out.println("No room is available now.");
-                main();
-            }
-            else{
-                Date newCheckInDate = hr.alternativeDate(checkIn);
-                Date newCheckOutDate = hr.alternativeDate(checkOut);
-
-                System.out.println("Sorry, there is no room available during the selected period.");
-                System.out.println("You may choose alternative date range from" +
-                        newCheckInDate + " to " + newCheckOutDate);
-
-                printRooms(recommendRoom);
-                reserveRoom(scanner, newCheckInDate, newCheckOutDate,recommendRoom);
-            }
+//            Collection<IRoom> recommendRooms = hr.recommendRooms(checkIn, checkOut);
+//            System.out.println(recommendRooms);
+//            if (recommendRooms.isEmpty()){
+//                System.out.println("No room is available now.");
+//                mainOptions();
+//            }
+            System.out.println("No room is available now.");
+//            else{
+//                Date newCheckInDate = hr.datePlusDuration(checkIn);
+//                Date newCheckOutDate = hr.datePlusDuration(checkOut);
+//
+//                System.out.println("Sorry, there is no room available during the selected period.");
+//                System.out.println("You may choose alternative date range from" +
+//                        newCheckInDate + " to " + newCheckOutDate);
+//
+//                printRooms(recommendRooms);
+//                reserveRoom(scanner, newCheckInDate, newCheckOutDate,recommendRooms);
+//            }
         }
         else{
             printRooms(availableRoom);
@@ -140,7 +141,7 @@ public class MainMenu {
                 String emailInput = scanner.nextLine();
                 if (hr.getCustomer(emailInput) == null){
                     System.out.println("You don't have an account with us.");
-                    main();
+                    mainOptions();
                 }
                 else{
                     System.out.println("What room number would you like to reserve?");
@@ -149,15 +150,15 @@ public class MainMenu {
                     Reservation reservation = hr.bookARoom(emailInput, room, checkIn, checkOut);
                     System.out.println(reservation);
                 }
-                main();
+                mainOptions();
             }
             else {
                 System.out.println("Please create an account with us first.");
-                main();
+                mainOptions();
             }
         }
         else if (bookInput.equalsIgnoreCase("n")){
-            main();
+            mainOptions();
         }
         else{
             reserveRoom(scanner, checkIn, checkOut, rooms);

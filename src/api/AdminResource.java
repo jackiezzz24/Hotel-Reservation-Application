@@ -5,8 +5,12 @@ import service.*;
 import java.util.*;
 
 public class AdminResource {
-    private static final CustomerService customerService = new CustomerService();
-    private static final ReservationService reservationService = new ReservationService();
+    private static final CustomerService customerService = CustomerService.getInstance();
+    private static final ReservationService reservationService = ReservationService.getInstance();
+
+    public Customer getCustomer(String email) {
+        return customerService.getCustomer(email);
+    }
 
     public void addRoom(List<IRoom> rooms){
         for (IRoom room: rooms) {
@@ -15,7 +19,7 @@ public class AdminResource {
     }
 
     public static Collection<IRoom> getAllRooms(){
-        return reservationService.getAllRoom();
+        return reservationService.getAllRooms();
     }
 
     public Collection<Customer> getAllCustomers(){
@@ -26,4 +30,8 @@ public class AdminResource {
         reservationService.printAllReservation();
     }
 
+    public void addSampleData() {
+        customerService.addSampleData();
+        reservationService.addSampleData();
+    }
 }

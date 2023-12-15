@@ -1,9 +1,9 @@
 package model;
 
 public class Room implements IRoom{
-    private String roomNumber;
-    private Double roomPrice;
-    private RoomType roomType;
+    private final String roomNumber;
+    private final Double roomPrice;
+    private final RoomType roomType;
 
     public Room(String roomNumber, Double roomPrice, RoomType roomType){
         super();
@@ -26,13 +26,14 @@ public class Room implements IRoom{
 
     @Override
     public Double getRoomPrice() {
-        return roomPrice;
+        return null;
     }
 
     @Override
     public RoomType getRoomType() {
-        return roomType;
+        return null;
     }
+
 
     @Override
     public boolean isFree(){
